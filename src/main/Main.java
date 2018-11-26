@@ -18,6 +18,9 @@ public class Main {
 	static ArrayList<ArrayList<Course>> pairedCourses = new ArrayList();
 	static ArrayList<Pair> partialAssignments = new ArrayList();
 	
+	static Node baseNode;
+	static Node currentNode;
+	
 	static int wpref;
 	static int wsecdiff;
 	static int wpair;
@@ -26,6 +29,7 @@ public class Main {
 	public static void main(String[] args)
 	{
 		Parser parser = new Parser();
+		baseNode = new Node(null, new ArrayList<Node>(), new ArrayList<Pair>());
 		String inputText = "";
 		String[] seperatedText;
 		String filename = "input.txt";
@@ -68,6 +72,26 @@ public class Main {
 		preferredPairings = parser.getPreferredPairings(courses, slots, seperatedText);
 		pairedCourses = parser.getPairedCourses(courses, seperatedText);
 		partialAssignments = parser.getPartialAssignments(courses, slots, seperatedText);
+		for (Pair p : partialAssignments) {
+			slots.get(slots.indexOf(p.getSlot())).addCourse(p.getCourse());;
+			courses.remove(p.getCourse());
+			baseNode.addToPr(p);
+		}
+		for (Course c : courses) {
+			baseNode.addToPr(new Pair(c, null));
+		}
+		currentNode = baseNode;
+		currentNode = div(currentNode);
+	}
+	
+	private static Node div(Node n) {
+		Node copyNode = new Node(n);
+		for(Pair p : copyNode.getPr()) {
+			if(p.getSlot() != null) {
+				n.getPr().remove(p);
+			}
+		}
+		return null;
 	}
 	
 	
