@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.util.Random;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -85,13 +86,25 @@ public class Main {
 	}
 	
 	private static Node div(Node n) {
+		//gets rid of already assigned courses from the list to be chosen.
 		Node copyNode = new Node(n);
 		for(Pair p : copyNode.getPr()) {
 			if(p.getSlot() != null) {
 				n.getPr().remove(p);
 			}
 		}
-		return null;
+		
+		//select random course to divide up.
+		Random rand = new Random();
+		int randomNum = rand.nextInt(n.getPr().size());
+		
+		//create a node for each slot for the randomly chosen pair and make it the child of the current node
+		for (Slot s : slots) {
+			Node newNode = new Node(n, new ArrayList<Node>(), n.getPr());
+			newNode.getPr().get(randomNum).setSlot(s);
+			n.addChild(newNode);
+		}
+		return n;
 	}
 	
 	
